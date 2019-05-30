@@ -3,17 +3,17 @@ var onRun = function (context) {
 	var sel = context.selection;
 	var range = NSMakeRange(0, 1);
 	var installedFonts = NSFontManager.sharedFontManager().availableFontFamilies();
-	var AdobeBlankInstalled = false;
+	var MonacoInstalled = false;
 
 	for (var i = 0; i < installedFonts.count(); i++) {
-		if ('Adobe Blank' == installedFonts[i]) {
-			AdobeBlankInstalled = true;
+		if ('Monaco' == installedFonts[i]) {
+			MonacoInstalled = true;
 			break;
 		}
 	}
 
-	if (!AdobeBlankInstalled) {
-		doc.showMessage('Please install the font: "Adobe Blank".');
+	if (!MonacoInstalled) {
+		doc.showMessage('Please install the font: "Monaco".');
 		return false;
 	}
 
@@ -21,14 +21,16 @@ var onRun = function (context) {
 		if ('MSTextLayer' == sel[i].class()) {
 			var textLayer  = sel[i];
 			var textSize   = textLayer.fontSize();
-			var textFont   = NSFont.fontWithName_size_('AdobeBlank', textSize);
+			var textFont   = NSFont.fontWithName_size_('Monaco', textSize);
 			var textString = textLayer.stringValue();
 			if (' ' != textString.substring(0, 1)) {
-				textString = ' ' + textString;
+                		// \u200b is zero-width space.
+				textString = '\u200b' + textString;
 			}
-			
+
 			textLayer.setStringValue(textString);
 			textLayer.addAttribute_value_forRange_(NSFontAttributeName, textFont, range);
 		}
 	}
 }
+
